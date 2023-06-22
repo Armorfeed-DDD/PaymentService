@@ -37,6 +37,12 @@ public class Payment implements Serializable {
     @Column(nullable = false)
     private boolean collected;
 
+    @Column(nullable = false, name = "users_enterprise_id")
+    private Long enterpriseId;
+
+    @Column(nullable = false, name = "users_customer_id")
+    private Long customerId;
+
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private PaymentStatus status;

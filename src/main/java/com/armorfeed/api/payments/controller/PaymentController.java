@@ -24,7 +24,10 @@ public class PaymentController {
     @Autowired
     PaymentsService paymentsService;
 
-
+    @PostMapping
+    public ResponseEntity<?> saveShipment(@RequestBody Payment payment){
+        return paymentsService.save(payment);
+    }
 
 
     @PatchMapping
