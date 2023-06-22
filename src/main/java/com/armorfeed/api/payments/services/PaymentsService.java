@@ -34,7 +34,7 @@ public class PaymentsService {
     @Autowired
     PaymentsServiceFeignClient paymentsServiceFeignClient;
 
-    public ResponseEntity<?>updatePayment(UpdatePaymentResource updatePaymentResource){
+    public ResponseEntity<?>updatePayment(UpdatePaymentResource updatePaymentResource,String bearerToken){
         Optional<Payment> paymentResult=paymentRepository.findById(updatePaymentResource.getId());
         if(paymentResult.isEmpty()){
             log.info("Payment with id {} doesn´t exist", updatePaymentResource.getId());

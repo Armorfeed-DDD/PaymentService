@@ -1,6 +1,7 @@
 package com.armorfeed.api.payments.controller;
 
 import com.armorfeed.api.payments.domain.entities.Payment;
+import com.armorfeed.api.payments.resources.UpdatePaymentResource;
 import com.armorfeed.api.payments.services.PaymentsService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,4 +23,19 @@ public class PaymentController {
 
     @Autowired
     PaymentsService paymentsService;
+
+
+
+
+    @PatchMapping
+    public ResponseEntity<?> patchPaymentStatus(
+            @RequestBody @Valid UpdatePaymentResource updatePaymentResource,
+            BindingResult bindingResult,
+            @RequestHeader("Authorization") String bearerToken
+    ){
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors().stream().map((error) -> error.getDefaultMessage()).collect(Collectors.toList()));
+        }
+        return this.paymentsService.updatePayment(updatePaymentResource,bearerToken);
+    }
 }
