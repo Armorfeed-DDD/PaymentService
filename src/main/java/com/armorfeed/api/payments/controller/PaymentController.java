@@ -1,6 +1,7 @@
 package com.armorfeed.api.payments.controller;
 
 import com.armorfeed.api.payments.domain.entities.Payment;
+import com.armorfeed.api.payments.resources.PaymentResponse;
 import com.armorfeed.api.payments.resources.UpdatePaymentResource;
 import com.armorfeed.api.payments.services.PaymentsService;
 
@@ -40,5 +41,15 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors().stream().map((error) -> error.getDefaultMessage()).collect(Collectors.toList()));
         }
         return this.paymentsService.updatePayment(updatePaymentResource,bearerToken);
+    }
+
+    @GetMapping("/customers/{customerId}")
+    public List<PaymentResponse> getAllPaymentsByCustomerId(@PathVariable("customerId") Long customerId) {
+        return paymentsService.getAllPaymentByCustomerId(customerId);
+    }
+
+    @GetMapping("/enterprises/{enterpriseId}")
+    public List<PaymentResponse> getAllPaymentsByEnterpriseId(@PathVariable("enterpriseId") Long enterprisesId) {
+        return paymentsService.getAllPaymentByEnterpriseId(enterprisesId);
     }
 }

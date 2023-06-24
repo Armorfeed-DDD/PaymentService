@@ -5,6 +5,7 @@ import com.armorfeed.api.payments.domain.enums.PaymentStatus;
 import com.armorfeed.api.payments.providers.feignclients.UsersServiceFeignClient;
 import com.armorfeed.api.payments.providers.feignclients.PaymentsServiceFeignClient;
 import com.armorfeed.api.payments.repositories.PaymentRepository;
+import com.armorfeed.api.payments.resources.PaymentResponse;
 import com.armorfeed.api.payments.resources.UpdatePaymentResource;
 import com.armorfeed.api.payments.security.FeignRequestInterceptor;
 import com.armorfeed.api.payments.shared.mapping.EnhancedModelMapper;
@@ -53,6 +54,20 @@ public class PaymentsService {
         log.info("New payment was successfully created");
         return ResponseEntity.ok().body(newPayment);
     }
+
+    public List<PaymentResponse> getAllPaymentByCustomerId(Long customerId) {
+        List<Payment> payments = paymentRepository.findPaymentCustomerId(customerId);
+        List<PaymentResponse> result = enhancedModelMapper.mapList(payments, PaymentResponse.class);
+        return result;
+    }
+
+
+    public List<PaymentResponse> getAllPaymentByEnterpriseId(Long enterpriseId) {
+        List<Payment> payments = paymentRepository.findPaymentByEnterpriseId(enterpriseId);
+        List<PaymentResponse> result = enhancedModelMapper.mapList(payments, PaymentResponse.class);
+        return result;
+    }
+
     public ResponseEntity<?>updatePayment(UpdatePaymentResource updatePaymentResource,String bearerToken){
         Optional<Payment> paymentResult=paymentRepository.findById(updatePaymentResource.getId());
         if(paymentResult.isEmpty()){
