@@ -1,6 +1,6 @@
 package com.armorfeed.api.payments.controller;
 
-import com.armorfeed.api.payments.domain.entities.Payment;
+import com.armorfeed.api.payments.resources.CreatePaymentResource;
 import com.armorfeed.api.payments.resources.PaymentResponse;
 import com.armorfeed.api.payments.resources.UpdatePaymentResource;
 import com.armorfeed.api.payments.services.PaymentsService;
@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,13 @@ public class PaymentController {
     PaymentsService paymentsService;
 
     @PostMapping
-    public ResponseEntity<?> saveShipment(@RequestBody Payment payment){
+    public ResponseEntity<?> savePayment(@RequestBody @Valid CreatePaymentResource payment, BindingResult validationResult){
+        if(validationResult.hasErrors()) {
+            return ResponseEntity.badRequest()
+                    .body(validationResult.getAllErrors()
+                            .stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
+                            .collect(Collectors.toList()));
+        }
         return paymentsService.save(payment);
     }
 
@@ -38,7 +45,7 @@ public class PaymentController {
             @RequestHeader("Authorization") String bearerToken
     ){
         if(bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors().stream().map((error) -> error.getDefaultMessage()).collect(Collectors.toList()));
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList()));
         }
         return this.paymentsService.updatePayment(updatePaymentResource,bearerToken);
     }
