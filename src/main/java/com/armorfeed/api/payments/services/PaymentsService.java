@@ -3,7 +3,6 @@ package com.armorfeed.api.payments.services;
 import com.armorfeed.api.payments.domain.entities.Payment;
 import com.armorfeed.api.payments.domain.enums.PaymentStatus;
 import com.armorfeed.api.payments.providers.feignclients.UsersServiceFeignClient;
-import com.armorfeed.api.payments.providers.feignclients.PaymentsServiceFeignClient;
 import com.armorfeed.api.payments.repositories.PaymentRepository;
 import com.armorfeed.api.payments.resources.CreatePaymentResource;
 import com.armorfeed.api.payments.resources.PaymentResponse;
@@ -34,9 +33,6 @@ public class PaymentsService {
 
     @Autowired
     UsersServiceFeignClient usersServiceFeignClient;
-
-    @Autowired
-    PaymentsServiceFeignClient paymentsServiceFeignClient;
 
     public ResponseEntity<?> save(CreatePaymentResource payment) {
         List<String> errors = new LinkedList<>();
