@@ -5,6 +5,7 @@ import com.armorfeed.api.payments.domain.enums.PaymentStatus;
 import com.armorfeed.api.payments.providers.feignclients.UsersServiceFeignClient;
 import com.armorfeed.api.payments.providers.feignclients.PaymentsServiceFeignClient;
 import com.armorfeed.api.payments.repositories.PaymentRepository;
+import com.armorfeed.api.payments.resources.CreatePaymentResource;
 import com.armorfeed.api.payments.resources.PaymentResponse;
 import com.armorfeed.api.payments.resources.UpdatePaymentResource;
 import com.armorfeed.api.payments.security.FeignRequestInterceptor;
@@ -37,7 +38,7 @@ public class PaymentsService {
     @Autowired
     PaymentsServiceFeignClient paymentsServiceFeignClient;
 
-    public ResponseEntity<?> save(Payment payment) {
+    public ResponseEntity<?> save(CreatePaymentResource payment) {
         List<String> errors = new LinkedList<>();
         if(usersServiceFeignClient.validateCustomerId(payment.getCustomerId()) == false) {
             errors.add("Customer with id " + payment.getCustomerId() + " does not exist");
@@ -50,9 +51,10 @@ public class PaymentsService {
         if(errors.isEmpty() == false) {
             return ResponseEntity.badRequest().body(errors);
         }
-        Payment newPayment = paymentRepository.save(payment);
+        Payment newPayment = enhancedModelMapper.map(payment, Payment.class);
+        Payment result = paymentRepository.save(newPayment);
         log.info("New payment was successfully created");
-        return ResponseEntity.ok().body(newPayment);
+        return ResponseEntity.ok().body(result);
     }
 
     public List<PaymentResponse> getAllPaymentByCustomerId(Long customerId) {

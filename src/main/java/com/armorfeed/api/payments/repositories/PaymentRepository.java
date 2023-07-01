@@ -1,12 +1,15 @@
 package com.armorfeed.api.payments.repositories;
 
 import com.armorfeed.api.payments.domain.entities.Payment;
-import com.armorfeed.api.payments.domain.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment,Long> {
-    List<Payment> findPaymentCustomerId(Long customerId);
-    List<Payment> findPaymentByEnterpriseId(Long enterpriseId);
+    @Query("SELECT P FROM Payment P WHERE P.customerId = :customerId")
+    List<Payment> findPaymentCustomerId(@Param("customerId") Long customerId);
+    @Query("SELECT P FROM Payment P WHERE P.enterpriseId = :enterpriseId")
+    List<Payment> findPaymentByEnterpriseId(@Param("enterpriseId") Long enterpriseId);
 }
